@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingBag, Heart, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,50 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isVisible, setIsVisible] = useState(true);
+  const [isInHero, setIsInHero] = useState(true);
+  const lastScrollY = useRef(0);
   const { cartCount, setIsCartOpen, wishlist } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const heroHeight = window.innerHeight * 0.9; // Approximate hero section height
+      
+      // Check if we're in the hero section
+      setIsInHero(currentScrollY < heroHeight);
+      
+      // Show header when scrolling up, hide when scrolling down (only after hero)
+      if (currentScrollY < heroHeight) {
+        setIsVisible(true);
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // Scrolling down and past threshold
+        setIsVisible(false);
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const heroHeight = window.innerHeight * 0.9;
+      // Show header when mouse leaves hero area (moves above it)
+      if (e.clientY < 80) {
+        setIsVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +69,11 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+    <header 
+      className={`fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       {/* Top Banner */}
       <div className="bg-primary text-primary-foreground text-center py-2 text-sm">
         <p>Free shipping on orders over $100 • Use code UNOFFICIAL20 for 20% off</p>
