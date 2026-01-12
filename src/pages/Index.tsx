@@ -1,13 +1,41 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Layout from "@/components/layout/Layout";
+import HeroSection from "@/components/home/HeroSection";
+import CategoryGrid from "@/components/home/CategoryGrid";
+import FeaturedProducts from "@/components/home/FeaturedProducts";
+import PromoSection from "@/components/home/PromoSection";
+import BrandBanner from "@/components/home/BrandBanner";
+import { getNewArrivals, getBestSellers, getSaleProducts } from "@/data/products";
 
 const Index = () => {
+  const newArrivals = getNewArrivals();
+  const bestSellers = getBestSellers();
+  const saleProducts = getSaleProducts();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <Layout>
+      <HeroSection />
+      <BrandBanner />
+      <FeaturedProducts
+        title="New Arrivals"
+        subtitle="The latest additions to our collection"
+        products={newArrivals}
+        viewAllLink="/shop?filter=new"
+      />
+      <CategoryGrid />
+      <FeaturedProducts
+        title="Best Sellers"
+        subtitle="Shop our most popular styles"
+        products={bestSellers}
+        viewAllLink="/shop?filter=bestseller"
+      />
+      <PromoSection />
+      <FeaturedProducts
+        title="Sale"
+        subtitle="Limited time offers on select items"
+        products={saleProducts}
+        viewAllLink="/shop?filter=sale"
+      />
+    </Layout>
   );
 };
 
