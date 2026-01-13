@@ -4,6 +4,7 @@ import { Search, ShoppingBag, Heart, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { categories } from "@/data/products";
+import MegaMenu from "./MegaMenu";
 import {
   Sheet,
   SheetContent,
@@ -98,30 +99,8 @@ const Header = () => {
             </h1>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <Link
-              to="/shop?filter=new"
-              className="text-sm font-medium uppercase tracking-wide underline-animated"
-            >
-              New Arrivals
-            </Link>
-            {categories.map((category) => (
-              <Link
-                key={category.slug}
-                to={`/shop?category=${category.slug}`}
-                className="text-sm font-medium uppercase tracking-wide underline-animated"
-              >
-                {category.name}
-              </Link>
-            ))}
-            <Link
-              to="/shop?filter=sale"
-              className="text-sm font-medium uppercase tracking-wide text-destructive underline-animated"
-            >
-              Sale
-            </Link>
-          </nav>
+          {/* Desktop Navigation with Mega Menu */}
+          <MegaMenu isVisible={isVisible} />
 
           {/* Right Actions */}
           <div className="flex items-center space-x-2 lg:space-x-4">
